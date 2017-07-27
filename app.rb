@@ -12,17 +12,17 @@ get '/' do
   if current_user
     erb :game
   else
-    erb :user_login, :locals => {:client_id => CLIENT_ID}
+    erb :user_login, locals: {client_id: CLIENT_ID}
   end
 end
 
 get '/callback' do
   session_code = request.env['rack.request.query_hash']['code']
   result = RestClient.post('https://github.com/login/oauth/access_token',
-                          {:client_id => CLIENT_ID,
-                           :client_secret => CLIENT_SECRET,
-                           :code => session_code},
-                           :accept => :json)
+                          {client_id: CLIENT_ID,
+                           client_secret: CLIENT_SECRET,
+                           code: session_code},
+                           accept: :json)
   auth_token = {}
   auth_token[:access_token] = JSON.parse(result)['access_token']
   client = get_octokit_user(auth_token[:access_token])
